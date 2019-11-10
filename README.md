@@ -31,8 +31,17 @@ You can follow the steps below to install the Compliance Engine.
 
 ### In the Compliance Account
 1. Deploy compliance-account-initial-setup.yaml in your centralized account. Change the MainRegion parameter to match the region where you are deploying this template, if required.
+'''
+aws cli command
+'''
 2. Zip the 2 directories "rules/" and "rulesets-built/" into "ruleset.zip", including the directories themselves.
-3. Copy the "ruleset.zip" in the source bucket (i.e. by default "compliance-engine-codebuild-source-**account_id**-**region_name**")
+'''
+$ zip -r ruleset.zip rules/ rulesets-build/
+'''
+3. Copy the "ruleset.zip" into the source bucket (i.e. by default "compliance-engine-codebuild-source-**account_id**-**region_name**")
+'''
+aws s3 cp
+'''
 4. Go to CodePipeline, then locate the pipeline named "Compliance-Engine-Pipeline". Wait that it auto-triggers (it might show "Failed" when you check for the first time). 
 
 ### In the Application Accounts
