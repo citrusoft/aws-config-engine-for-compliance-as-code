@@ -31,21 +31,35 @@ You can follow the steps below to install the Compliance Engine.
 
 ### In the Compliance Account
 1. Deploy compliance-account-initial-setup.yaml in your centralized account. Change the MainRegion parameter to match the region where you are deploying this template, if required.
-'''
-aws cli command
-'''
+
+'$ aws cli command'
+
 2. Zip the 2 directories "rules/" and "rulesets-built/" into "ruleset.zip", including the directories themselves.
-'''
-$ zip -r ruleset.zip rules/ rulesets-build/
-'''
+
+'$ zip -r ruleset.zip rules/ rulesets-build/'
+
 3. Copy the "ruleset.zip" into the source bucket (i.e. by default "compliance-engine-codebuild-source-**account_id**-**region_name**")
-'''
-aws s3 cp
-'''
+
+'aws s3 cp ruleset.zip s3://compliance-engine-codebuild-source-919568423267-us-east-2/ --profile tah'
+
 4. Go to CodePipeline, then locate the pipeline named "Compliance-Engine-Pipeline". Wait that it auto-triggers (it might show "Failed" when you check for the first time). 
 
+### App Account Prerequisite(s)
+The easiest, predictable way to form this stack is to ensure that Config Service is NOT configured.
+If it has then try these steps to clean it up.
+1. List, Stop and Delete Recording
+'$ aws configservice describe-configuration-recorders --profile=tahunt'
+'$ aws configservice stop-configuration-recorder --configuration-recorder-name configRecorderName'
+'$ aws configservice delete-configuration-recorder --configuration-recorder-name default --profile=tahunt'
+2. List & Delete delivery-channel
+'$ aws configservice describe-delivery-channels --profile=tahunt'
+'$ aws configservice delete-delivery-channel default --profile=tahunt'
 ### In the Application Accounts
-1. Deploy application-account-initial-setup.yaml.
+1. Deploy application-account-initial-setup.yaml. Ensure that you set these parameter-values...
+- MainRegion
+- ComplianceAccountId
+- DeployAWSConfig = true
+- Stack Name
 
 ### Verify the deployment works
 1. Verify in the Compliance Account that the CodePipeline pipeline named "Compliance-Engine-Pipeline" is executed succesfully
